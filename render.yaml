@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: postgresql-database-dumper
+    env: python
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT main:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: EXTERNAL_DATABASE_URL
+        value: postgresql://reviewpilot_user:kLQiZvLx6Hk5sOw92HO5tt7Xa9oeUEL6@dpg-d27nseogjchc738fvaf0-a.oregon-postgres.render.com/reviewpilot
+      - key: SESSION_SECRET
+        generateValue: true
+    region: oregon
+    plan: free
+    healthCheckPath: /

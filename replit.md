@@ -17,13 +17,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Deployment Configuration
 
-### Vercel Deployment
+### Render Deployment
+- **Entry Point**: `main.py` with gunicorn WSGI server
+- **Configuration**: `render.yaml` for automated deployment
+- **Build Command**: `pip install -r requirements_render.txt`
+- **Start Command**: `gunicorn --bind 0.0.0.0:$PORT main:app`
+- **Environment Variables**: `EXTERNAL_DATABASE_URL` and `SESSION_SECRET` (auto-generated)
+- **Database**: Uses external PostgreSQL database (ReviewPilot production)
+- **Python Version**: 3.11
+- **Dependencies**: Defined in requirements_render.txt
+
+### Alternative Vercel Deployment
 - **Entry Point**: `api/index.py` (serverless function)
 - **Static Files**: Properly routed through `/static/` path
 - **Environment Variables**: `EXTERNAL_DATABASE_URL` required
-- **Database**: Uses external PostgreSQL database (ReviewPilot production)
-- **Python Version**: 3.11 (specified in runtime.txt)
-- **Dependencies**: Defined in Pipfile and requirements_vercel.txt
+- **Configuration**: `vercel.json` for serverless deployment
 
 ## System Architecture
 
