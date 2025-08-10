@@ -5,7 +5,8 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "50mb",
+        "maxDuration": 30
       }
     }
   ],
@@ -24,10 +25,5 @@
     "PYTHONPATH": ".",
     "DATABASE_URL": "@database_url",
     "EXTERNAL_DATABASE_URL": "@external_database_url"
-  },
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 30
-    }
   }
 }
