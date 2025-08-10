@@ -11,9 +11,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DatabaseManager:
-    def __init__(self):
+    def __init__(self, database_url=None):
         self.connection = None
-        self.database_url = app.config["DATABASE_URL"]
+        self.database_url = database_url or app.config["DATABASE_URL"]
         
     def connect(self):
         """Establish database connection"""
@@ -23,10 +23,10 @@ class DatabaseManager:
                     self.database_url,
                     cursor_factory=psycopg2.extras.RealDictCursor
                 )
-            return True
+            return self.connection
         except Exception as e:
             logger.error(f"Database connection failed: {str(e)}")
-            return False
+            return None
     
     def disconnect(self):
         """Close database connection"""
@@ -36,10 +36,11 @@ class DatabaseManager:
     def get_tables(self):
         """Get list of all tables in the database"""
         try:
-            if not self.connect():
+            conn = self.connect()
+            if not conn:
                 return None
                 
-            cursor = self.connection.cursor()
+            cursor = conn.cursor()
             cursor.execute("""
                 SELECT table_name, table_schema
                 FROM information_schema.tables 
@@ -56,10 +57,11 @@ class DatabaseManager:
     def get_table_structure(self, table_name, schema='public'):
         """Get structure information for a specific table"""
         try:
-            if not self.connect():
+            conn = self.connect()
+            if not conn:
                 return None
                 
-            cursor = self.connection.cursor()
+            cursor = conn.cursor()
             cursor.execute("""
                 SELECT 
                     column_name,
@@ -81,10 +83,11 @@ class DatabaseManager:
     def get_table_data(self, table_name, schema='public', limit=100, offset=0, order_by=None, order_dir='ASC', search=None):
         """Get data from a specific table with pagination and filtering"""
         try:
-            if not self.connect():
+            conn = self.connect()
+            if not conn:
                 return None, 0
                 
-            cursor = self.connection.cursor()
+            cursor = conn.cursor()
             
             # Build base query
             base_query = f'FROM "{schema}"."{table_name}"'
@@ -103,9 +106,13 @@ class DatabaseManager:
                     where_clause = f" WHERE ({' OR '.join(search_conditions)})"
             
             # Count total records
-            count_query = f"SELECT COUNT(*) {base_query}{where_clause}"
+            count_query = f"SELECT COUNT(*) as count {base_query}{where_clause}"
             cursor.execute(count_query, params)
-            total_count = cursor.fetchone()[0]
+            count_result = cursor.fetchone()
+            total_count = count_result['count'] if count_result else 0
+            
+            # Reset cursor for main query
+            cursor = conn.cursor()
             
             # Build main query with ordering and pagination
             order_clause = ""
@@ -127,10 +134,11 @@ class DatabaseManager:
     def execute_custom_query(self, query, limit=1000):
         """Execute a custom SQL query"""
         try:
-            if not self.connect():
+            conn = self.connect()
+            if not conn:
                 return None, "Database connection failed"
                 
-            cursor = self.connection.cursor()
+            cursor = conn.cursor()
             
             # Add limit to SELECT queries if not already present
             query_stripped = query.strip().upper()
@@ -144,7 +152,7 @@ class DatabaseManager:
                 cursor.close()
                 return data, None
             else:  # Query doesn't return results (INSERT, UPDATE, DELETE, etc.)
-                self.connection.commit()
+                conn.commit()
                 cursor.close()
                 return [], None
                 
@@ -196,8 +204,13 @@ class DatabaseManager:
             if not data:
                 return f"-- No data found in table {schema}.{table_name}\n"
                 
-            # Get column names
-            columns = list(data[0].keys())
+            # Get column names from first row (RealDictRow)
+            if hasattr(data[0], 'keys'):
+                columns = list(data[0].keys())
+            else:
+                # Fallback for tuple data
+                structure = self.get_table_structure(table_name, schema)
+                columns = [col['column_name'] for col in structure] if structure else []
             column_list = ', '.join([f'"{col}"' for col in columns])
             
             sql_statements = []

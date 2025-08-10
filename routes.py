@@ -1,19 +1,38 @@
-from flask import render_template, request, jsonify, Response, flash, redirect, url_for
+from flask import render_template, request, jsonify, Response, flash, redirect, url_for, session
 from app import app
-from database import db_manager
+from database import db_manager, DatabaseManager
 import logging
 
 logger = logging.getLogger(__name__)
 
+def get_current_db_manager():
+    """Get the database manager for the current database selection"""
+    db_choice = session.get('database_choice', 'replit')
+    if db_choice == 'external':
+        return DatabaseManager(app.config["EXTERNAL_DATABASE_URL"])
+    else:
+        return DatabaseManager(app.config["REPLIT_DATABASE_URL"])
+
 @app.route('/')
 def index():
     """Main dashboard showing all tables"""
-    tables = db_manager.get_tables()
+    current_db = get_current_db_manager()
+    tables = current_db.get_tables()
+    db_choice = session.get('database_choice', 'replit')
+    
     if tables is None:
         flash('Failed to connect to database. Please check your connection.', 'error')
         tables = []
     
-    return render_template('index.html', tables=tables)
+    return render_template('index.html', tables=tables, db_choice=db_choice)
+
+@app.route('/switch_database', methods=['POST'])
+def switch_database():
+    """Switch between databases"""
+    db_choice = request.form.get('database_choice', 'replit')
+    session['database_choice'] = db_choice
+    flash(f'Switched to {"External" if db_choice == "external" else "Replit"} database', 'info')
+    return redirect(url_for('index'))
 
 @app.route('/table/<table_name>')
 def table_view(table_name):
@@ -26,15 +45,16 @@ def table_view(table_name):
     search = request.args.get('search', '').strip()
     
     offset = (page - 1) * per_page
+    current_db = get_current_db_manager()
     
     # Get table structure
-    structure = db_manager.get_table_structure(table_name, schema)
+    structure = current_db.get_table_structure(table_name, schema)
     if structure is None:
         flash(f'Failed to fetch table structure for {table_name}', 'error')
         return redirect(url_for('index'))
     
     # Get table data
-    data, total_count = db_manager.get_table_data(
+    data, total_count = current_db.get_table_data(
         table_name, schema, per_page, offset, order_by, order_dir, search
     )
     
@@ -78,8 +98,9 @@ def execute_query():
         if not query:
             return jsonify({'success': False, 'error': 'Query cannot be empty'})
         
+        current_db = get_current_db_manager()
         # Execute query
-        result, error = db_manager.execute_custom_query(query)
+        result, error = current_db.execute_custom_query(query)
         
         if error:
             return jsonify({'success': False, 'error': error})
@@ -87,7 +108,10 @@ def execute_query():
         # Convert result to serializable format
         if result:
             serialized_result = [dict(row) for row in result]
-            columns = list(result[0].keys()) if result else []
+            if hasattr(result[0], 'keys'):
+                columns = list(result[0].keys())
+            else:
+                columns = []
         else:
             serialized_result = []
             columns = []
@@ -108,10 +132,11 @@ def export_table(table_name):
     """Export table data in various formats"""
     schema = request.args.get('schema', 'public')
     format_type = request.args.get('format', 'csv').lower()
+    current_db = get_current_db_manager()
     
     try:
         if format_type == 'csv':
-            data = db_manager.export_table_csv(table_name, schema)
+            data = current_db.export_table_csv(table_name, schema)
             if data is None:
                 flash('Failed to export table data', 'error')
                 return redirect(url_for('table_view', table_name=table_name, schema=schema))
@@ -123,7 +148,7 @@ def export_table(table_name):
             )
         
         elif format_type == 'json':
-            data = db_manager.export_table_json(table_name, schema)
+            data = current_db.export_table_json(table_name, schema)
             if data is None:
                 flash('Failed to export table data', 'error')
                 return redirect(url_for('table_view', table_name=table_name, schema=schema))
@@ -135,7 +160,7 @@ def export_table(table_name):
             )
         
         elif format_type == 'sql':
-            data = db_manager.export_table_sql(table_name, schema)
+            data = current_db.export_table_sql(table_name, schema)
             if data is None:
                 flash('Failed to export table data', 'error')
                 return redirect(url_for('table_view', table_name=table_name, schema=schema))
@@ -158,7 +183,8 @@ def export_table(table_name):
 @app.route('/api/tables')
 def api_tables():
     """API endpoint to get list of tables"""
-    tables = db_manager.get_tables()
+    current_db = get_current_db_manager()
+    tables = current_db.get_tables()
     if tables is None:
         return jsonify({'success': False, 'error': 'Failed to fetch tables'})
     
@@ -171,7 +197,8 @@ def api_tables():
 def api_table_structure(table_name):
     """API endpoint to get table structure"""
     schema = request.args.get('schema', 'public')
-    structure = db_manager.get_table_structure(table_name, schema)
+    current_db = get_current_db_manager()
+    structure = current_db.get_table_structure(table_name, schema)
     
     if structure is None:
         return jsonify({'success': False, 'error': 'Failed to fetch table structure'})
