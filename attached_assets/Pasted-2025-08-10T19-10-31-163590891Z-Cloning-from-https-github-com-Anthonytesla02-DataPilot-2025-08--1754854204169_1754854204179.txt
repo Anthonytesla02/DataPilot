@@ -1,0 +1,92 @@
+2025-08-10T19:10:31.163590891Z ==> Cloning from https://github.com/Anthonytesla02/DataPilot
+2025-08-10T19:10:31.558833062Z ==> Checking out commit e6c37860a91a71e083dea1d7fbcce9d6f934ff74 in branch main
+2025-08-10T19:10:34.265745177Z ==> Using Python version 3.13.4 (default)
+2025-08-10T19:10:34.295315888Z ==> Docs on specifying a Python version: https://render.com/docs/python-version
+2025-08-10T19:10:38.428905995Z ==> Using Poetry version 2.1.3 (default)
+2025-08-10T19:10:38.483671114Z ==> Docs on specifying a Poetry version: https://render.com/docs/poetry-version
+2025-08-10T19:10:38.522025014Z ==> Using uv version 0.7.12 (default)
+2025-08-10T19:10:38.522077538Z ==> Docs on specifying a uv version: https://render.com/docs/uv-version
+2025-08-10T19:10:38.522084218Z ==> Installing uv version 0.7.12...
+2025-08-10T19:10:40.286479404Z ==> Running build command 'pip install -r requirements_render.txt'...
+2025-08-10T19:10:41.452236685Z Collecting Flask==3.1.1 (from -r requirements_render.txt (line 1))
+2025-08-10T19:10:41.52716213Z   Downloading flask-3.1.1-py3-none-any.whl.metadata (3.0 kB)
+2025-08-10T19:10:42.318647103Z Collecting Flask-CORS==6.0.1 (from -r requirements_render.txt (line 2))
+2025-08-10T19:10:42.32854787Z   Downloading flask_cors-6.0.1-py3-none-any.whl.metadata (5.3 kB)
+2025-08-10T19:10:42.95732174Z Collecting Flask-SQLAlchemy==3.1.1 (from -r requirements_render.txt (line 3))
+2025-08-10T19:10:42.967228457Z   Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+2025-08-10T19:10:43.45744047Z Collecting psycopg2-binary==2.9.10 (from -r requirements_render.txt (line 4))
+2025-08-10T19:10:43.467581912Z   Downloading psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+2025-08-10T19:10:43.999363969Z Collecting pandas==2.3.1 (from -r requirements_render.txt (line 5))
+2025-08-10T19:10:44.009390843Z   Downloading pandas-2.3.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (91 kB)
+2025-08-10T19:10:44.552817513Z Collecting Werkzeug==3.1.3 (from -r requirements_render.txt (line 6))
+2025-08-10T19:10:44.562558599Z   Downloading werkzeug-3.1.3-py3-none-any.whl.metadata (3.7 kB)
+2025-08-10T19:10:44.94300582Z Collecting blinker>=1.9.0 (from Flask==3.1.1->-r requirements_render.txt (line 1))
+2025-08-10T19:10:44.952583567Z   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+2025-08-10T19:10:45.35947332Z Collecting click>=8.1.3 (from Flask==3.1.1->-r requirements_render.txt (line 1))
+2025-08-10T19:10:45.369200206Z   Downloading click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+2025-08-10T19:10:45.809330513Z Collecting itsdangerous>=2.2.0 (from Flask==3.1.1->-r requirements_render.txt (line 1))
+2025-08-10T19:10:45.819130243Z   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+2025-08-10T19:10:46.195395412Z Collecting jinja2>=3.1.2 (from Flask==3.1.1->-r requirements_render.txt (line 1))
+2025-08-10T19:10:46.269494696Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+2025-08-10T19:10:46.853955677Z Collecting markupsafe>=2.1.1 (from Flask==3.1.1->-r requirements_render.txt (line 1))
+2025-08-10T19:10:46.86429589Z   Downloading MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+2025-08-10T19:10:47.648656615Z Collecting sqlalchemy>=2.0.16 (from Flask-SQLAlchemy==3.1.1->-r requirements_render.txt (line 3))
+2025-08-10T19:10:47.658355899Z   Downloading sqlalchemy-2.0.42-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+2025-08-10T19:10:48.472529961Z Collecting numpy>=1.26.0 (from pandas==2.3.1->-r requirements_render.txt (line 5))
+2025-08-10T19:10:48.509911043Z   Downloading numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+2025-08-10T19:10:48.948091172Z Collecting python-dateutil>=2.8.2 (from pandas==2.3.1->-r requirements_render.txt (line 5))
+2025-08-10T19:10:48.957685219Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2025-08-10T19:10:49.361238202Z Collecting pytz>=2020.1 (from pandas==2.3.1->-r requirements_render.txt (line 5))
+2025-08-10T19:10:49.371351521Z   Downloading pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+2025-08-10T19:10:49.789026755Z Collecting tzdata>=2022.7 (from pandas==2.3.1->-r requirements_render.txt (line 5))
+2025-08-10T19:10:49.798836046Z   Downloading tzdata-2025.2-py2.py3-none-any.whl.metadata (1.4 kB)
+2025-08-10T19:10:50.287936943Z Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas==2.3.1->-r requirements_render.txt (line 5))
+2025-08-10T19:10:50.297600605Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2025-08-10T19:10:50.762412589Z Collecting greenlet>=1 (from sqlalchemy>=2.0.16->Flask-SQLAlchemy==3.1.1->-r requirements_render.txt (line 3))
+2025-08-10T19:10:50.772196208Z   Downloading greenlet-3.2.4-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (4.1 kB)
+2025-08-10T19:10:51.256098862Z Collecting typing-extensions>=4.6.0 (from sqlalchemy>=2.0.16->Flask-SQLAlchemy==3.1.1->-r requirements_render.txt (line 3))
+2025-08-10T19:10:51.265781406Z   Downloading typing_extensions-4.14.1-py3-none-any.whl.metadata (3.0 kB)
+2025-08-10T19:10:51.43632951Z Downloading flask-3.1.1-py3-none-any.whl (103 kB)
+2025-08-10T19:10:51.708787985Z Downloading flask_cors-6.0.1-py3-none-any.whl (13 kB)
+2025-08-10T19:10:51.987169417Z Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+2025-08-10T19:10:52.157627287Z Downloading psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+2025-08-10T19:10:52.469419481Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 9.1 MB/s eta 0:00:00
+2025-08-10T19:10:52.479309767Z Downloading pandas-2.3.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.1 MB)
+2025-08-10T19:10:52.980797951Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 23.6 MB/s eta 0:00:00
+2025-08-10T19:10:52.990597202Z Downloading werkzeug-3.1.3-py3-none-any.whl (224 kB)
+2025-08-10T19:10:53.194759792Z Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+2025-08-10T19:10:53.354040408Z Downloading click-8.2.1-py3-none-any.whl (102 kB)
+2025-08-10T19:10:53.537528473Z Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+2025-08-10T19:10:53.67939832Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+2025-08-10T19:10:53.86246974Z Downloading MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+2025-08-10T19:10:54.134829289Z Downloading numpy-2.3.2-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+2025-08-10T19:10:54.818596994Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 24.0 MB/s eta 0:00:00
+2025-08-10T19:10:54.828576436Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2025-08-10T19:10:55.069880134Z Downloading pytz-2025.2-py2.py3-none-any.whl (509 kB)
+2025-08-10T19:10:55.307939416Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2025-08-10T19:10:55.522837013Z Downloading sqlalchemy-2.0.42-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+2025-08-10T19:10:55.810797863Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 10.6 MB/s eta 0:00:00
+2025-08-10T19:10:55.822267114Z Downloading greenlet-3.2.4-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (610 kB)
+2025-08-10T19:10:56.0280248Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 610.5/610.5 kB 1.7 MB/s eta 0:00:00
+2025-08-10T19:10:56.039663182Z Downloading typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+2025-08-10T19:10:56.257131684Z Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+2025-08-10T19:10:56.401769858Z Installing collected packages: pytz, tzdata, typing-extensions, six, psycopg2-binary, numpy, markupsafe, itsdangerous, greenlet, click, blinker, Werkzeug, sqlalchemy, python-dateutil, jinja2, pandas, Flask, Flask-SQLAlchemy, Flask-CORS
+2025-08-10T19:11:09.642699692Z 
+2025-08-10T19:11:09.646571125Z Successfully installed Flask-3.1.1 Flask-CORS-6.0.1 Flask-SQLAlchemy-3.1.1 Werkzeug-3.1.3 blinker-1.9.0 click-8.2.1 greenlet-3.2.4 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.2 numpy-2.3.2 pandas-2.3.1 psycopg2-binary-2.9.10 python-dateutil-2.9.0.post0 pytz-2025.2 six-1.17.0 sqlalchemy-2.0.42 typing-extensions-4.14.1 tzdata-2025.2
+2025-08-10T19:11:09.765995481Z 
+2025-08-10T19:11:09.766010831Z [notice] A new release of pip is available: 25.1.1 -> 25.2
+2025-08-10T19:11:09.766014242Z [notice] To update, run: pip install --upgrade pip
+2025-08-10T19:11:14.351882093Z ==> Uploading build...
+2025-08-10T19:11:24.401944216Z ==> Uploaded in 8.1s. Compression took 1.9s
+2025-08-10T19:11:24.437223202Z ==> Build successful 🎉
+2025-08-10T19:11:27.737156494Z ==> Deploying...
+2025-08-10T19:11:46.370211093Z ==> Running 'gunicorn --bind 0.0.0.0:$PORT main:app'
+2025-08-10T19:11:46.37644708Z bash: line 1: gunicorn: command not found
+2025-08-10T19:11:49.421192643Z ==> Exited with status 127
+2025-08-10T19:11:49.438339711Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2025-08-10T19:11:54.653707145Z ==> Running 'gunicorn --bind 0.0.0.0:$PORT main:app'
+2025-08-10T19:11:54.659124641Z bash: line 1: gunicorn: command not found
+2025-08-10T19:11:49.421192643Z ==> Exited with status 127
+2025-08-10T19:11:49.438339711Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2025-08-10T19:11:54.653707145Z ==> Running 'gunicorn --bind 0.0.0.0:$PORT main:app'
+2025-08-10T19:11:54.659124641Z bash: line 1: gunicorn: command not found
