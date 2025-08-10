@@ -22,8 +22,6 @@
   ],
   "env": {
     "FLASK_ENV": "production",
-    "PYTHONPATH": ".",
-    "DATABASE_URL": "@database_url",
-    "EXTERNAL_DATABASE_URL": "@external_database_url"
+    "PYTHONPATH": "."
   }
 }
