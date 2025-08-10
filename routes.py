@@ -7,11 +7,16 @@ logger = logging.getLogger(__name__)
 
 def get_current_db_manager():
     """Get the database manager for the current database selection"""
-    db_choice = session.get('database_choice', 'replit')
+    db_choice = session.get('database_choice', 'external')  # Default to external for Vercel
     if db_choice == 'external':
         return DatabaseManager(app.config["EXTERNAL_DATABASE_URL"])
     else:
-        return DatabaseManager(app.config["REPLIT_DATABASE_URL"])
+        # For Vercel deployment, use external DB if no Replit DB is available
+        replit_url = app.config.get("REPLIT_DATABASE_URL")
+        if replit_url:
+            return DatabaseManager(replit_url)
+        else:
+            return DatabaseManager(app.config["EXTERNAL_DATABASE_URL"])
 
 @app.route('/')
 def index():

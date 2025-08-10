@@ -17,11 +17,11 @@ CORS(app)
 
 # Configure database URLs
 REPLIT_DATABASE_URL = os.environ.get("DATABASE_URL")
-EXTERNAL_DATABASE_URL = "postgresql://reviewpilot_user:kLQiZvLx6Hk5sOw92HO5tt7Xa9oeUEL6@dpg-d27nseogjchc738fvaf0-a.oregon-postgres.render.com/reviewpilot"
+EXTERNAL_DATABASE_URL = os.environ.get("EXTERNAL_DATABASE_URL", "postgresql://reviewpilot_user:kLQiZvLx6Hk5sOw92HO5tt7Xa9oeUEL6@dpg-d27nseogjchc738fvaf0-a.oregon-postgres.render.com/reviewpilot")
 
 app.config["REPLIT_DATABASE_URL"] = REPLIT_DATABASE_URL
 app.config["EXTERNAL_DATABASE_URL"] = EXTERNAL_DATABASE_URL
-app.config["DATABASE_URL"] = REPLIT_DATABASE_URL  # Default to Replit DB
+app.config["DATABASE_URL"] = REPLIT_DATABASE_URL or EXTERNAL_DATABASE_URL  # Fallback to external if no Replit DB
 
 # Import routes
 from routes import *

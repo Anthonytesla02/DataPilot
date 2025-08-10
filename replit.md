@@ -4,9 +4,26 @@
 
 This is a Flask-based web application that provides a user-friendly interface for viewing and managing PostgreSQL databases. The application serves as a database administration tool, allowing users to browse tables, view data with pagination and filtering, execute custom SQL queries, and export data in various formats. It features a dark-themed Bootstrap UI with responsive design and real-time data interaction capabilities.
 
+**Recent Changes (August 10, 2025):**
+- Configured for Vercel deployment with serverless functions
+- Added database switching between Replit and external PostgreSQL databases
+- Created proper WSGI entry points and environment configuration
+- Added comprehensive error handling and connection timeouts
+- Prepared deployment-ready structure with proper static file handling
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Deployment Configuration
+
+### Vercel Deployment
+- **Entry Point**: `api/index.py` (serverless function)
+- **Static Files**: Properly routed through `/static/` path
+- **Environment Variables**: `EXTERNAL_DATABASE_URL` required
+- **Database**: Uses external PostgreSQL database (ReviewPilot production)
+- **Python Version**: 3.11 (specified in runtime.txt)
+- **Dependencies**: Defined in Pipfile and requirements_vercel.txt
 
 ## System Architecture
 

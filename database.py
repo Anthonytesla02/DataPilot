@@ -18,10 +18,15 @@ class DatabaseManager:
     def connect(self):
         """Establish database connection"""
         try:
+            if not self.database_url:
+                logger.error("No database URL provided")
+                return None
+                
             if self.connection is None or self.connection.closed:
                 self.connection = psycopg2.connect(
                     self.database_url,
-                    cursor_factory=psycopg2.extras.RealDictCursor
+                    cursor_factory=psycopg2.extras.RealDictCursor,
+                    connect_timeout=10
                 )
             return self.connection
         except Exception as e:
