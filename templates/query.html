@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Query - PostgreSQL Database Dumper</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-database me-2"></i>
+                PostgreSQL Database Dumper
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('query_interface') }}">
+                            <i class="fas fa-code me-1"></i>Custom Query
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5 mb-0">
+                    <i class="fas fa-code text-primary me-3"></i>
+                    Custom SQL Query
+                </h1>
+                <p class="lead text-muted">
+                    Execute custom SQL queries against the database
+                </p>
+            </div>
+        </div>
+
+        <!-- Query Interface -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-terminal me-2"></i>
+                            SQL Query Editor
+                        </h5>
+                        <div class="btn-group" role="group" aria-label="Query actions">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="executeQuery()">
+                                <i class="fas fa-play me-1"></i>Execute
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearQuery()">
+                                <i class="fas fa-eraser me-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <textarea id="queryEditor" class="form-control border-0" 
+                                  placeholder="Enter your SQL query here..." 
+                                  style="min-height: 300px; resize: vertical; font-family: 'Courier New', monospace;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Query Examples -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            Example Queries
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Basic Queries:</h6>
+                                <div class="list-group list-group-flush">
+                                    <button type="button" class="list-group-item list-group-item-action p-2" 
+                                            onclick="setQuery('SELECT * FROM information_schema.tables WHERE table_schema = \'public\' LIMIT 10;')">
+                                        <small>List all tables</small>
+                                    </button>
+                                    <button type="button" class="list-group-item list-group-item-action p-2" 
+                                            onclick="setQuery('SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = \'public\';')">
+                                        <small>Count tables</small>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Advanced Queries:</h6>
+                                <div class="list-group list-group-flush">
+                                    <button type="button" class="list-group-item list-group-item-action p-2" 
+                                            onclick="setQuery('SELECT schemaname, tablename, attname, n_distinct, correlation FROM pg_stats LIMIT 10;')">
+                                        <small>Table statistics</small>
+                                    </button>
+                                    <button type="button" class="list-group-item list-group-item-action p-2" 
+                                            onclick="setQuery('SELECT current_database(), current_user, inet_server_addr(), inet_server_port();')">
+                                        <small>Database info</small>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Query Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Query Status
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="queryStatus">
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-clock me-2"></i>
+                                Ready to execute queries
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Notice -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0 text-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Safety Notice
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li><i class="fas fa-check text-success me-2"></i>Read operations are safe</li>
+                            <li><i class="fas fa-exclamation text-warning me-2"></i>Be careful with UPDATE/DELETE</li>
+                            <li><i class="fas fa-times text-danger me-2"></i>No DROP statements allowed</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Results limited to 1000 rows</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row mt-4" id="resultsSection" style="display: none;">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table me-2"></i>
+                            Query Results
+                        </h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="exportResults('csv')">
+                                <i class="fas fa-file-csv me-1"></i>CSV
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="exportResults('json')">
+                                <i class="fas fa-file-code me-1"></i>JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultsTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="row mt-4" id="errorSection" style="display: none;">
+            <div class="col">
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Query Error
+                    </h6>
+                    <div id="errorMessage"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/sql/sql.min.js"></script>
+    <script>
+        let currentResults = null;
+        
+        // Initialize CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById('queryEditor'), {
+            mode: 'text/x-sql',
+            theme: 'dracula',
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentWithTabs: true,
+            smartIndent: true,
+            lineWrapping: true
+        });
+
+        function setQuery(query) {
+            editor.setValue(query);
+            editor.focus();
+        }
+
+        function clearQuery() {
+            editor.setValue('');
+            editor.focus();
+        }
+
+        function executeQuery() {
+            const query = editor.getValue().trim();
+            if (!query) {
+                alert('Please enter a SQL query');
+                return;
+            }
+
+            // Update status
+            updateStatus('Executing query...', 'info');
+            hideResults();
+            hideError();
+
+            // Execute query
+            $.ajax({
+                url: '/execute_query',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ query: query }),
+                success: function(response) {
+                    if (response.success) {
+                        displayResults(response.data, response.columns, response.row_count);
+                        updateStatus(`Query executed successfully. ${response.row_count} rows returned.`, 'success');
+                    } else {
+                        displayError(response.error);
+                        updateStatus('Query failed', 'danger');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    displayError(`Request failed: ${error}`);
+                    updateStatus('Query failed', 'danger');
+                }
+            });
+        }
+
+        function updateStatus(message, type) {
+            const icon = type === 'success' ? 'check' : type === 'danger' ? 'times' : type === 'info' ? 'clock' : 'info-circle';
+            const statusDiv = document.getElementById('queryStatus');
+            statusDiv.innerHTML = `<p class="text-${type} mb-0"><i class="fas fa-${icon} me-2"></i>${message}</p>`;
+        }
+
+        function displayResults(data, columns, rowCount) {
+            currentResults = { data, columns };
+            
+            if (!data || data.length === 0) {
+                document.getElementById('resultsTable').innerHTML = '<p class="text-muted">No results returned.</p>';
+                document.getElementById('resultsSection').style.display = 'block';
+                return;
+            }
+
+            let html = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr>';
+            
+            // Add headers
+            columns.forEach(col => {
+                html += `<th>${col}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            // Add data rows
+            data.forEach(row => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    const value = row[col];
+                    if (value === null || value === undefined) {
+                        html += '<td><span class="text-muted fst-italic">NULL</span></td>';
+                    } else if (typeof value === 'string' && value.length > 100) {
+                        html += `<td title="${value.replace(/"/g, '&quot;')}">${value.substring(0, 100)}...</td>`;
+                    } else {
+                        html += `<td>${value}</td>`;
+                    }
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table></div>';
+            document.getElementById('resultsTable').innerHTML = html;
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function displayError(error) {
+            document.getElementById('errorMessage').textContent = error;
+            document.getElementById('errorSection').style.display = 'block';
+        }
+
+        function hideResults() {
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        function hideError() {
+            document.getElementById('errorSection').style.display = 'none';
+        }
+
+        function exportResults(format) {
+            if (!currentResults || !currentResults.data) {
+                alert('No results to export');
+                return;
+            }
+
+            let content = '';
+            let filename = '';
+            let mimeType = '';
+
+            if (format === 'csv') {
+                const headers = currentResults.columns.join(',');
+                const rows = currentResults.data.map(row => 
+                    currentResults.columns.map(col => {
+                        const value = row[col];
+                        if (value === null || value === undefined) return '';
+                        if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+                            return `"${value.replace(/"/g, '""')}"`;
+                        }
+                        return value;
+                    }).join(',')
+                ).join('\n');
+                content = headers + '\n' + rows;
+                filename = 'query_results.csv';
+                mimeType = 'text/csv';
+            } else if (format === 'json') {
+                content = JSON.stringify(currentResults.data, null, 2);
+                filename = 'query_results.json';
+                mimeType = 'application/json';
+            }
+
+            // Create download
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Keyboard shortcut for execution (Ctrl+Enter)
+        editor.setOption("extraKeys", {
+            "Ctrl-Enter": executeQuery
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
